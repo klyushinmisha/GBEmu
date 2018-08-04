@@ -7,7 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		74465ADA2115D54A001CB6F2 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 74465AD92115D54A001CB6F2 /* main.cpp */; };
+		74465AEB2115D599001CB6F2 /* GameBoy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 74465AE32115D599001CB6F2 /* GameBoy.cpp */; };
+		74465AEC2115D599001CB6F2 /* Background.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 74465AE42115D599001CB6F2 /* Background.cpp */; };
+		74465AED2115D599001CB6F2 /* Interrupts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 74465AE52115D599001CB6F2 /* Interrupts.cpp */; };
+		74465AEE2115D599001CB6F2 /* LCD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 74465AE62115D599001CB6F2 /* LCD.cpp */; };
+		74465AEF2115D599001CB6F2 /* ALU.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 74465AE72115D599001CB6F2 /* ALU.cpp */; };
+		74465AF02115D599001CB6F2 /* CPU.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 74465AE82115D599001CB6F2 /* CPU.cpp */; };
+		74465AF12115D599001CB6F2 /* Memory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 74465AE92115D599001CB6F2 /* Memory.cpp */; };
+		74465AF22115D599001CB6F2 /* Timer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 74465AEA2115D599001CB6F2 /* Timer.cpp */; };
+		74465AF52115DA0E001CB6F2 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74465AF42115DA0E001CB6F2 /* SDL2.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -24,7 +32,18 @@
 
 /* Begin PBXFileReference section */
 		74465AD62115D54A001CB6F2 /* GBEmu */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = GBEmu; sourceTree = BUILT_PRODUCTS_DIR; };
-		74465AD92115D54A001CB6F2 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		74465AE02115D57F001CB6F2 /* Main */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Main; sourceTree = "<group>"; };
+		74465AE12115D57F001CB6F2 /* CPU */ = {isa = PBXFileReference; lastKnownFileType = folder; path = CPU; sourceTree = "<group>"; };
+		74465AE22115D57F001CB6F2 /* LCD */ = {isa = PBXFileReference; lastKnownFileType = folder; path = LCD; sourceTree = "<group>"; };
+		74465AE32115D599001CB6F2 /* GameBoy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameBoy.cpp; sourceTree = "<group>"; };
+		74465AE42115D599001CB6F2 /* Background.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Background.cpp; sourceTree = "<group>"; };
+		74465AE52115D599001CB6F2 /* Interrupts.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Interrupts.cpp; sourceTree = "<group>"; };
+		74465AE62115D599001CB6F2 /* LCD.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LCD.cpp; sourceTree = "<group>"; };
+		74465AE72115D599001CB6F2 /* ALU.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ALU.cpp; sourceTree = "<group>"; };
+		74465AE82115D599001CB6F2 /* CPU.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CPU.cpp; sourceTree = "<group>"; };
+		74465AE92115D599001CB6F2 /* Memory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Memory.cpp; sourceTree = "<group>"; };
+		74465AEA2115D599001CB6F2 /* Timer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Timer.cpp; sourceTree = "<group>"; };
+		74465AF42115DA0E001CB6F2 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,6 +51,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				74465AF52115DA0E001CB6F2 /* SDL2.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -43,6 +63,7 @@
 			children = (
 				74465AD82115D54A001CB6F2 /* GBEmu */,
 				74465AD72115D54A001CB6F2 /* Products */,
+				74465AF32115DA0E001CB6F2 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -57,9 +78,27 @@
 		74465AD82115D54A001CB6F2 /* GBEmu */ = {
 			isa = PBXGroup;
 			children = (
-				74465AD92115D54A001CB6F2 /* main.cpp */,
+				74465AE12115D57F001CB6F2 /* CPU */,
+				74465AE22115D57F001CB6F2 /* LCD */,
+				74465AE02115D57F001CB6F2 /* Main */,
+				74465AE72115D599001CB6F2 /* ALU.cpp */,
+				74465AE42115D599001CB6F2 /* Background.cpp */,
+				74465AE82115D599001CB6F2 /* CPU.cpp */,
+				74465AE32115D599001CB6F2 /* GameBoy.cpp */,
+				74465AE52115D599001CB6F2 /* Interrupts.cpp */,
+				74465AE62115D599001CB6F2 /* LCD.cpp */,
+				74465AE92115D599001CB6F2 /* Memory.cpp */,
+				74465AEA2115D599001CB6F2 /* Timer.cpp */,
 			);
 			path = GBEmu;
+			sourceTree = "<group>";
+		};
+		74465AF32115DA0E001CB6F2 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				74465AF42115DA0E001CB6F2 /* SDL2.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -119,7 +158,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				74465ADA2115D54A001CB6F2 /* main.cpp in Sources */,
+				74465AEF2115D599001CB6F2 /* ALU.cpp in Sources */,
+				74465AEC2115D599001CB6F2 /* Background.cpp in Sources */,
+				74465AEB2115D599001CB6F2 /* GameBoy.cpp in Sources */,
+				74465AF02115D599001CB6F2 /* CPU.cpp in Sources */,
+				74465AF12115D599001CB6F2 /* Memory.cpp in Sources */,
+				74465AF22115D599001CB6F2 /* Timer.cpp in Sources */,
+				74465AED2115D599001CB6F2 /* Interrupts.cpp in Sources */,
+				74465AEE2115D599001CB6F2 /* LCD.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -233,6 +279,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+				);
+				"FRAMEWORK_SEARCH_PATHS[arch=*]" = /Library/Frameworks/;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -241,6 +292,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+				);
+				"FRAMEWORK_SEARCH_PATHS[arch=*]" = /Library/Frameworks/;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
