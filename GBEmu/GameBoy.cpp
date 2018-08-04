@@ -65,14 +65,16 @@ void GameBoy::Run()
     static const byte colors[4][3] = { { 196, 207, 161 }, { 139, 149, 109 }, { 107, 115, 83 }, { 65, 65, 65 } };
     SDL_Init(SDL_INIT_EVERYTHING);
 
-    SDL_Window* w = SDL_CreateWindow("Window", 100, 100, 320, 288, 0);
+    int scale = 3;
+    SDL_Window* w = SDL_CreateWindow("Window", 100, 100, 160*scale, 144*scale, 0);
 
     SDL_Event* e = nullptr;
     SDL_Renderer* ren = SDL_CreateRenderer(w, -1, SDL_RENDERER_ACCELERATED);
     SDL_Rect* r = new SDL_Rect();
 
-    r->w = 2;
-    r->h = 2;
+    
+    r->w = scale;
+    r->h = scale;
     SDL_ShowWindow(w);
     SDL_RenderClear(ren);
     int c;
@@ -87,8 +89,8 @@ void GameBoy::Run()
                 {
                     c = LCDBuffer[i][j];
                     SDL_SetRenderDrawColor(ren, colors[c][0], colors[c][1], colors[c][2], 255);
-                    r->x = j*2;
-                    r->y = i*2;
+                    r->x = j*scale;
+                    r->y = i*scale;
                     SDL_RenderFillRect(ren, r);
                     
                 }

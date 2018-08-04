@@ -50,7 +50,7 @@ LCD::LCD(GameBoy* gb, byte* RAM)
 
 void LCD::DrawLine()
 {
-    for (int pixel = 0; pixel < 159; pixel++)
+    for (int pixel = 0; pixel < 160; pixel++)
         DrawPixel(pixel, gb->getYCoordinate(), GetPixel(pixel));
     gb->setYCoordinate(gb->getYCoordinate() + 1);
 }
