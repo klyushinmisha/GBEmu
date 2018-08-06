@@ -20,7 +20,7 @@ byte LCD::GetPixel(int pixel)
     //if (gb->WindowDisplayEnable & pixel >= gb->WindowX & gb->YCoordinate >= gb->WindowY)
      //   return window.GetPixelColor(pixel);
     //else
-        return background->GetPixelColor(pixel);
+        return gb->getBGWindowPalette(background->GetPalleteColor(pixel));
 }
 
 /*bool LCD::IsInArea()
@@ -31,10 +31,10 @@ byte LCD::GetPixel(int pixel)
 
 byte LCD::GetColor(ushort startAddr, int xOffset, int yOffset)
 {
-    int half1 = (RAM[startAddr] >> (7 - xOffset)) & 1;
-    int half2 = (RAM[startAddr + 1] >> (7 - xOffset)) & 1;
-    int value = (half2 << 1) + half1;
-    return (byte)(value);
+    byte half1 = (RAM[startAddr] >> (7 - xOffset)) & 1;
+    byte half2 = (RAM[startAddr + 1] >> (7 - xOffset)) & 1;
+    byte value = (half2 << 1) + half1;
+    return value;
 }
 
 
@@ -51,7 +51,7 @@ LCD::LCD(GameBoy* gb, byte* RAM)
 void LCD::DrawLine()
 {
     for (int pixel = 0; pixel < 160; pixel++)
-        DrawPixel(pixel, gb->getYCoordinate(), GetPixel(pixel));
+        gb->LCDBuffer[gb->getYCoordinate()][pixel] = GetPixel(pixel);
     gb->setYCoordinate(gb->getYCoordinate() + 1);
 }
 
@@ -71,7 +71,11 @@ byte LCD::PixelColor(byte ID, int xOffset, int yOffset, bool bank)
     if (bank)
         startAddr = (ushort)(0x8000 + ID * 16);
     else
-        startAddr = (ushort)(0x9000 + gb->ToSByte(ID) * 16);
+    {
+        char* sb = (char*)&ID;
+        startAddr = (ushort)(0x9000 + *sb * 16);
+    }
+    
     startAddr += (ushort)(yOffset * 2);
 
     return GetColor(startAddr, xOffset, yOffset);
@@ -87,8 +91,3 @@ byte LCD::PixelColor(byte ID, int xOffset, int yOffset, bool bank)
         return true;
     return false;
 }*/
-
-void LCD::DrawPixel(int x, int y, int color)
-{
-    gb->LCDBuffer[y][x] = color;
-}

@@ -1,6 +1,6 @@
 #pragma once
-#include "/Users/mihail/Desktop/C++/GBEmu/GBEmu/Main/GameBoy.h"
-#include "/Users/mihail/Desktop/C++/GBEmu/GBEmu/LCD/Background.h"
+#include "Main/GameBoy.h"
+#include "LCD/Background.h"
 
 class GameBoy;
 class Background;
@@ -33,5 +33,4 @@ public:
     //void FindSprites();
     byte PixelColor(byte ID, int xOffset, int yOffset, bool bank);
     //bool IsPrevailing(Sprite s, int pixel);
-    void DrawPixel(int x, int y, int color);
 };

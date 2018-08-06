@@ -18,5 +18,4 @@ public:
     Background(GameBoy* gb, byte* RAM);
     byte TileFromMap(int i, int j);
     byte GetPalleteColor(int pixel);
-    byte GetPixelColor(int pixel);
 };

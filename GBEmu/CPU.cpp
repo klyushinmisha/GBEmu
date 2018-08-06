@@ -345,6 +345,11 @@ void CPU::Clock()
 
 
         case 0xF5:
+            *F = 0;
+            *F |= Zero ? 0x80 : 0;
+            *F |= Substract ? 0x40 : 0;
+            *F |= HalfCarry ? 0x20 : 0;
+            *F |= Carry ? 0x10 : 0;
             PUSH(*A, *F);
             break;
         case 0xC5:
@@ -360,7 +365,10 @@ void CPU::Clock()
 
         case 0xF1:
             POP(A, F);
-            *F &= 0xF0;
+            Carry = (*F & 0x10) == 0x10;
+            HalfCarry = (*F & 0x20) == 0x20;
+            Substract = (*F & 0x40) == 0x40;
+            Zero = (*F & 0x80) == 0x80;
             break;
         case 0xC1:
             POP(B, C);

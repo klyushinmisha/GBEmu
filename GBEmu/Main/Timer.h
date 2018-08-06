@@ -1,5 +1,5 @@
 #pragma once
-#include "/Users/mihail/Desktop/C++/GBEmu/GBEmu/Main/GameBoy.h"
+#include "Main/GameBoy.h"
 
 
 class GameBoy;

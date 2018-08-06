@@ -44,7 +44,7 @@ void ALU::SUB(byte value)
 
 void ALU::SBC(byte value)
 {
-    SUB((byte)(value + *F & 0x10));
+    SUB(value + *F & 0x10);
 }
 
 void ALU::INC(byte* value)
@@ -84,11 +84,11 @@ ushort ALU::ADDsbyteToSP()
     Substract = false;
     tmp = gb->Read(PC);
     PC++;
-    if (gb->ToSByte(tmp) < 0)
+    char* sb = (char*)&tmp;
+    if (*sb < 0)
     {
-
-        HalfCarry = (SP & 0xFFF) > (abs(gb->ToSByte(tmp)) & 0xFFF);
-        Carry = (SP & 0xFFFF) > (abs(gb->ToSByte(tmp)) & 0xFFFF);
+        HalfCarry = (SP & 0xFFF) > (abs(*sb) & 0xFFF);
+        Carry = (SP & 0xFFFF) > (abs(*sb) & 0xFFFF);
     }
     else
     {
@@ -96,7 +96,7 @@ ushort ALU::ADDsbyteToSP()
         Carry = (((SP & 0xFFFF) + (tmp & 0xFFFF)) & 0x10000) == 0x10000;
     }
     gb->SyncCycles(8);
-    return (ushort)(SP + gb->ToSByte(tmp));
+    return SP + *sb;
 }
 
 
@@ -137,9 +137,9 @@ void ALU::CP(byte value)
 
 void ALU::DAA()
 {
-    byte bias = (byte)(Carry ? 0x60 : 0);
+    byte bias = Carry ? 0x60 : 0;
 
-    bias += (byte)(HalfCarry ? 0x6 : 0);
+    bias += HalfCarry ? 0x6 : 0;
 
     if (Substract)
         *A -= bias;
@@ -184,12 +184,12 @@ void ALU::SWAP(byte* value)
     HalfCarry = false;
     Substract = false;
     Carry = false;
-    *value = (byte)((*value & 0xF0) >> 4 | (*value) << 4);
+    *value = (*value & 0xF0) >> 4 | (*value) << 4;
 }
 
 void ALU::CPL()
 {
-    *A = (byte)(~(*A));
+    *A = ~(*A);
     Substract = true;
     HalfCarry = true;
 }
@@ -213,7 +213,7 @@ void ALU::SCF()
 void ALU::RLC(byte* value)
 {
     Carry = ((*value >> 7) & 1) == 1;
-    *value = (byte)(*value >> 7 | (*value) << 1);
+    *value = *value >> 7 | (*value) << 1;
     Zero = (*value) == 0;
     HalfCarry = false;
     Substract = false;
@@ -222,7 +222,7 @@ void ALU::RLC(byte* value)
 void ALU::RL(byte* value)
 {
     byte temp = (*value);
-    *value = (byte)(*value << 1 | (Carry ? 1 : 0));
+    *value = *value << 1 | (Carry ? 1 : 0);
     Carry = ((temp >> 7) & 1) == 1;
     Zero = (*value) == 0;
     HalfCarry = false;
@@ -233,7 +233,7 @@ void ALU::RL(byte* value)
 void ALU::RRC(byte* value)
 {
     Carry = (*value & 1) == 1;
-    *value = (byte)((*value >> 1) | ((*value & 1) << 7));
+    *value = (*value >> 1) | ((*value & 1) << 7);
     Zero = (*value) == 0;
     HalfCarry = false;
     Substract = false;
@@ -243,7 +243,7 @@ void ALU::RRC(byte* value)
 void ALU::RR(byte* value)
 {
     byte temp = (*value);
-    *value = (byte)(*value >> 1 | (Carry ? 0x80 : 0));
+    *value = *value >> 1 | (Carry ? 0x80 : 0);
     Carry = (temp & 1) == 1;
     Zero = (*value) == 0;
     HalfCarry = false;
@@ -254,7 +254,7 @@ void ALU::RR(byte* value)
 void ALU::SLA(byte* value)
 {
     Carry = (*value & 0x80) == 0x80;
-    *value = (byte)(*value << 1);
+    *value = *value << 1;
     Zero = (*value) == 0;
     HalfCarry = false;
     Substract = false;
@@ -264,7 +264,7 @@ void ALU::SLA(byte* value)
 void ALU::SRA(byte* value)
 {
     Carry = (*value & 1) == 1;
-    *value = (byte)((*value & 0x80) | (*value) >> 1);
+    *value = (*value & 0x80) | (*value) >> 1;
     Zero = value == 0;
     HalfCarry = false;
     Substract = false;
@@ -274,7 +274,7 @@ void ALU::SRA(byte* value)
 void ALU::SRL(byte* value)
 {
     Carry = (*value & 1) == 1;
-    *value = (byte)(*value >> 1);
+    *value = *value >> 1;
     Zero = (*value) == 0;
     HalfCarry = false;
     Substract = false;
@@ -283,20 +283,20 @@ void ALU::SRL(byte* value)
 
 void ALU::BIT(byte bit, byte value)
 {
-    *F = (byte)((*F & 0x10) | 0x20);
+    *F = (*F & 0x10) | 0x20;
     if ((value >> bit) == 0)
         Zero = true;
 }
 
 void ALU::SET(byte* value, byte bit)
 {
-    *value |= (byte)(1 << bit);
+    *value |= 1 << bit;
 }
 
 
 void ALU::RES(byte* value, byte bit)
 {
-    *value &= (byte)(~(1 << bit));
+    *value &= ~(1 << bit);
 }
 
 
@@ -334,8 +334,10 @@ void ALU::JP(bool flag)
 
 void ALU::JR(bool flag)
 {
+    byte value = gb->Read(PC);
+    char* sb = (char*)&value;
     if (flag)
-        PC = (ushort)(PC + gb->ToSByte(gb->Read(PC)));
+        PC = (ushort)(PC + *sb);
     gb->SyncCycles(4);
     PC++;
 }

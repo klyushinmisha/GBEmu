@@ -1,8 +1,8 @@
-#include "/Users/mihail/Desktop/C++/GBEmu/GBEmu/Main/CPU.h"
-#include "/Users/mihail/Desktop/C++/GBEmu/GBEmu/Main/Memory.h"
-#include "/Users/mihail/Desktop/C++/GBEmu/GBEmu/Main/LCD.h"
-#include "/Users/mihail/Desktop/C++/GBEmu/GBEmu/Main/Timer.h"
-#include "/Users/mihail/Desktop/C++/GBEmu/GBEmu/Main/Interrupts.h"
+#include "Main/CPU.h"
+#include "Main/Memory.h"
+#include "Main/LCD.h"
+#include "Main/Timer.h"
+#include "Main/Interrupts.h"
 #include <string>
 
 
@@ -34,9 +34,6 @@ private:
 
 public:
     byte** LCDBuffer;
-
-
-    sbyte ToSByte(byte value);
 
 
     bool DMATransfer;

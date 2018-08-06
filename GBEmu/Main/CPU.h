@@ -1,6 +1,6 @@
 #pragma once
-#include "/Users/mihail/Desktop/C++/GBEmu/GBEmu/Main/GameBoy.h"
-#include "/Users/mihail/Desktop/C++/GBEmu/GBEmu/CPU/ALU.h"
+#include "Main/GameBoy.h"
+#include "CPU/ALU.h"
 #include <exception>
 
 typedef unsigned char byte;

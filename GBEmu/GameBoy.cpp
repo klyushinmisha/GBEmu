@@ -2,22 +2,6 @@
 #include "SDL2/SDL.h"
 #include <exception>
 
-sbyte GameBoy::ToSByte(byte value)
-{
-    sbyte sb;
-    if (value == 128)
-        return -128;
-    if ((value & 0x80) == 0x80)
-    {
-        value--;
-        value = (byte)(~value);
-        sb = (sbyte)(-value);
-    }
-    else
-        sb = (sbyte)value;
-    return sb;
-}
-
 void GameBoy::Link(std::string cartridgeName)
 {
     DMATransfer = false;
