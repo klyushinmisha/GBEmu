@@ -3,34 +3,33 @@
 void Memory::LoadCartridge(std::string path)
 {
 	std::fstream is;
-    is.open("/Users/mihail/Desktop/C++/GBEmu/GBEmu/ROMs/Tetris.gb", std::fstream::in);
+    is.open("/Users/mikhail/Desktop/C++/GBEmu/GBEmu/ROMs/Tetris.gb", std::fstream::in);
 
-    /*int length = is.tellg();
+    long int length = is.tellg();
     is.seekg(0, is.end);
-    length = (int)is.tellg() - length;
-    is.seekg(0, is.beg);*/
+    length = (long int)is.tellg() - length;
+    is.seekg(0, is.beg);
 
     try
     {
-        /*std::cout << length << std::endl;
         if (length % 0x8000 != 0)
-            throw new std::exception();*/
+            throw new std::exception();
         is.read((char*)RAM, 0x8000);
         
-        /*if (length == 0x8000)
-         {*/
-        is.close();
-        return;
-        //}
+        if (length == 0x8000)
+        {
+            is.close();
+            return;
+        }
 
-        //cartridgeData = new byte*[length % 0x8000 - 1];
+        cartridgeData = new byte*[length % 0x8000 - 1];
 
-        /*for (int i = 0; i < length % 0x8000 - 1; i++)
+        // проверить??? 0x8000?
+        for (int i = 0; i < length % 0x8000 - 1; i++)
         {
             cartridgeData[i] = new byte[0x8000];
-            for (int j = 0; j < 0x8000; j++)
-                is >> cartridgeData[i][j];
-        }*/
+            is.read((char*)cartridgeData[i], 0x8000);
+        }
     }
     catch (std::exception e)
     {
@@ -47,11 +46,8 @@ Memory::Memory(GameBoy* gb, std::string cartridgeName, byte* RAM)
     this->gb = gb;
     this->RAM = RAM;
     RAMBank = 0;
-
-    std::cout << "beg" << std::endl;
+    
     LoadCartridge(cartridgeName);
-
-    std::cout << "end" << std::endl;
     
     //Clear this item
     //because 0 means all keys down
@@ -63,9 +59,7 @@ Memory::Memory(GameBoy* gb, std::string cartridgeName, byte* RAM)
     std::fstream fs;
     try
     {
-        std::cout << "not opened" << std::endl;
-        fs.open("/Users/mihail/Desktop/C++/GBEmu/GBEmu/Resources/BIOS.bin", std::fstream::in);
-        std::cout << "opened" << std::endl;
+        fs.open("/Users/mikhail/Desktop/C++/GBEmu/GBEmu/Resources/BIOS.bin", std::fstream::in);
         char* tmpR = new char[256];
         fs.read(tmpR, 256);
         ROM = (byte*)tmpR;
@@ -166,8 +160,8 @@ void Memory::Write(int addr, byte value)
 
 void Memory::WriteWord(int addr, ushort value)
 {
-    Write(addr, (byte)(value & 0xFF));
-    Write(addr + 1, (byte)(value >> 8));
+    Write(addr, value & 0xFF);
+    Write(addr + 1, value >> 8);
 }
 
 

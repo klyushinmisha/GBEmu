@@ -1,6 +1,6 @@
 #pragma once
-#include "/Users/mihail/Desktop/C++/GBEmu/GBEmu/Main/LCD.h"
-#include "/Users/mihail/Desktop/C++/GBEmu/GBEmu/Main/GameBoy.h"
+#include "Main/LCD.h"
+#include "Main/GameBoy.h"
 
 class GameBoy;
 

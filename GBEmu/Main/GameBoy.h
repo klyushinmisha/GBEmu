@@ -3,6 +3,7 @@
 #include "Main/LCD.h"
 #include "Main/Timer.h"
 #include "Main/Interrupts.h"
+#include "SDL2/SDL.h"
 #include <string>
 
 
@@ -27,15 +28,14 @@ private:
     LCD* lcd;
     Timer* timer;
     Interrupts* ints;
-
+    SDL_Renderer* ren;
+    SDL_Rect* r;
     byte* RAM;
-
+    int scale;
 
 
 public:
-    byte** LCDBuffer;
-
-
+    void DrawPixel(int x, int y, int color);
     bool DMATransfer;
     bool IME;
     bool Halt;
@@ -123,6 +123,8 @@ public:
     void Clock();
     bool Drawing();
     void Manager();
+    void KeyDown(SDL_Event e);
+    void KeyUp();
 };
 
 #endif

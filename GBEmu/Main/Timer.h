@@ -35,5 +35,5 @@ public:
 
     //Overloaded increment operator
     //Used for 
-    void operator++(int);
+    void Inc();
 };

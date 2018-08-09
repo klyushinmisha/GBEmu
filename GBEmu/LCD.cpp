@@ -51,7 +51,7 @@ LCD::LCD(GameBoy* gb, byte* RAM)
 void LCD::DrawLine()
 {
     for (int pixel = 0; pixel < 160; pixel++)
-        gb->LCDBuffer[gb->getYCoordinate()][pixel] = GetPixel(pixel);
+        gb->DrawPixel(pixel, gb->getYCoordinate(), GetPixel(pixel));
     gb->setYCoordinate(gb->getYCoordinate() + 1);
 }
 

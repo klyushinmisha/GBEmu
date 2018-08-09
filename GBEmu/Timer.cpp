@@ -9,7 +9,7 @@ Timer::Timer(byte* RAM)
 
 //Overloaded increment operator
 //Used for 
-void Timer::operator++(int)
+void Timer::Inc()
 {
     //Syncronization of DIV register
     systemCounter += 4;

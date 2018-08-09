@@ -24,7 +24,7 @@ private:
         //{ get { return gb.RAM[0x149]; } }
         bool isBooting, RAMEnabled, ROMRAMMode;
         byte RAMBank, ROMBank;
-        byte** cartridgeData;// = new byte[3, 0x2000];
+        byte** cartridgeData;
         byte* RAM;
 
 

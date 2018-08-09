@@ -284,7 +284,7 @@
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",
 				);
 				"FRAMEWORK_SEARCH_PATHS[arch=*]" = /Library/Frameworks/;
-				"HEADER_SEARCH_PATHS[arch=*]" = "/Users/mihail/Desktop/C++/GBEmu/GBEmu/";
+				"HEADER_SEARCH_PATHS[arch=*]" = "/Users/mikhail/Desktop/C++/GBEmu/GBEmu/";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;

@@ -1,5 +1,4 @@
 #include "Main/GameBoy.h"
-#include "SDL2/SDL.h"
 #include <exception>
 
 void GameBoy::Link(std::string cartridgeName)
@@ -8,9 +7,6 @@ void GameBoy::Link(std::string cartridgeName)
     IME = true;
     Halt = false;
     Stop = false;
-	LCDBuffer = new byte*[144];
-    for (int i = 0; i < 144; i++)
-        LCDBuffer[i] = new byte[160];
     RAM = new byte[0x10000];
     this->memory = new Memory(this, cartridgeName, RAM);
     this->cpu = new CPU(this);
@@ -21,67 +17,52 @@ void GameBoy::Link(std::string cartridgeName)
     setOAMInterrupt(true);
 }
 
-/*void GameBoy_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+static const byte colors[4][3] = { { 196, 207, 161 }, { 139, 149, 109 }, { 107, 115, 83 }, { 65, 65, 65 } };
+
+void GameBoy::DrawPixel(int x, int y, int color)
 {
-    Application.Exit();
-}*/
-
-/*
-    Это хэндлер для пользовательского ввода (событие отпускания клавиши)
-*/
-
-/*void GameBoy_KeyUp(object sender, KeyboardKeyEventArgs e)
-{
-    RAM[0xFF00] &= 0xF0;
-    RAM[0xFF00] |= 0xF;
-}*/
-
-/*
-    Основная часть эмулятора
-    Запускает цикл:
-        -отрисовка изображения контроллером
-        -обработка комманд процессором
-*/
+    SDL_SetRenderDrawColor(ren, colors[color][0], colors[color][1], colors[color][2], 255);
+    r->x = x*scale;
+    r->y = y*scale;
+    SDL_RenderFillRect(ren, r);
+}
 
 void GameBoy::Run()
 {
-
-    static const byte colors[4][3] = { { 196, 207, 161 }, { 139, 149, 109 }, { 107, 115, 83 }, { 65, 65, 65 } };
     SDL_Init(SDL_INIT_EVERYTHING);
-
-    int scale = 3;
-    SDL_Window* w = SDL_CreateWindow("Window", 100, 100, 160*scale, 144*scale, 0);
-
-    SDL_Event* e = nullptr;
-    SDL_Renderer* ren = SDL_CreateRenderer(w, -1, SDL_RENDERER_ACCELERATED);
-    SDL_Rect* r = new SDL_Rect();
-
     
+    scale = 3;
+    SDL_Window* w = SDL_CreateWindow("GBEmu", 100, 100, 160*scale, 144*scale, 0);
+
+    SDL_Event e;
+    ren = SDL_CreateRenderer(w, -1, SDL_RENDERER_ACCELERATED);
+    r = new SDL_Rect();
+
+    bool isRunning = true;
     r->w = scale;
     r->h = scale;
     SDL_ShowWindow(w);
     SDL_RenderClear(ren);
-    int c;
-    while (true)
+    while (isRunning)
     {
         if (Drawing())
             Manager();
         else
         {
-            for (int i = 0; i < 144; i++)
-                for (int j = 0; j < 160; j++)
-                {
-                    c = LCDBuffer[i][j];
-                    SDL_SetRenderDrawColor(ren, colors[c][0], colors[c][1], colors[c][2], 255);
-                    r->x = j*scale;
-                    r->y = i*scale;
-                    SDL_RenderFillRect(ren, r);
-                    
-                }
-            SDL_PollEvent(e);
-            if (SDL_HasEvent(SDL_QUIT))
-                break;
             SDL_RenderPresent(ren);
+            SDL_PollEvent(&e);
+            switch (e.type)
+            {
+                case SDL_QUIT:
+                    isRunning = false;
+                    break;
+                case SDL_KEYDOWN:
+                    KeyDown(e);
+                    break;
+                case SDL_KEYUP:
+                    KeyUp();
+                    break;
+            }
         }
     }
 
@@ -92,77 +73,65 @@ void GameBoy::Run()
     SDL_Quit();
 }
 
-/*
-    Связка всех классов между собой
-    Лучше будет реализовать через отдельный класс
-*/
-
-/*
-    Это хэндлер для пользовательского ввода (событие нажатия клавиши)
-*/
-
-/*void GameBoy_KeyDown(object sender, KeyboardKeyEventArgs e)
+void GameBoy::KeyDown(SDL_Event e)
 {
     byte key = 0;
-
+    
     if (((RAM[0xFF00] >> 4) & 3) == 3 | ((RAM[0xFF00] >> 4) & 3) == 0)
         return;
-
+    
     if (RAM[0xFF00] >> 4 == 0b1101)
-        switch (e.Key)
+        switch (e.key.keysym.sym)
         {
-            case Key.Number1:
+            case SDL_SCANCODE_1:
                 key = 0b111;
                 break;
-            case Key.Number2:
+            case SDL_SCANCODE_2:
                 key = 0b1011;
                 break;
-            case Key.K:
+            case SDL_SCANCODE_K:
                 key = 0b1101;
                 break;
-            case Key.L:
+            case SDL_SCANCODE_L:
                 key = 0b1110;
                 break;
             default:
                 return;
         }
     else if (RAM[0xFF00] >> 4 == 0b1110)
-        switch (e.Key)
+        switch (e.key.keysym.sym)
         {
-            case Key.W:
+            case SDL_SCANCODE_W:
                 key = 0b1011;
                 break;
-            case Key.A:
+            case SDL_SCANCODE_A:
                 key = 0b1101;
                 break;
-            case Key.S:
+            case SDL_SCANCODE_S:
                 key = 0b111;
                 break;
-            case Key.D:
+            case SDL_SCANCODE_D:
                 key = 0b1110;
                 break;
             default:
                 return;
         }
-
+    
     RAM[0xFF0F] |= 0b10000;
     RAM[0xFF00] &= 0xF0;
     RAM[0xFF00] |= key;
     Stop = false;
-}*/
+}
+
+void GameBoy::KeyUp()
+{
+    RAM[0xFF00] &= 0xF0;
+    RAM[0xFF00] |= 0xF;
+}
 
 GameBoy::~GameBoy()
 {
-
     delete[] RAM;
-
-
-    for (int i = 0; i < 144; i++)
-        delete[] LCDBuffer[i];
-    delete[] LCDBuffer;
-
-
-    std::cout << "buf!" << std::endl;
 }
 
 void GameBoy::SyncCycles(int count)
@@ -173,7 +142,7 @@ void GameBoy::SyncCycles(int count)
 void GameBoy::Sync()
 {
     SyncCycles(4);
-    timer++;
+    timer->Inc();
 }
 
 byte GameBoy::PixelColor(byte ID, int xOffset, int yOffset, bool bank)
@@ -235,7 +204,6 @@ void GameBoy::Manager()
 {
     ints->Manager();
 }
-
 
 int main()
 {

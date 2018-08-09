@@ -8,6 +8,9 @@ void CPU::Clock()
     //Extracts opcode
     opcode = gb->Read(PC);
     
+    
+    //Проверить инструкции test_...
+    
     PC++;
 
 

@@ -1,4 +1,4 @@
-#include "/Users/mihail/Desktop/C++/GBEmu/GBEmu/Main/GameBoy.h"
+#include "Main/GameBoy.h"
 
 #ifndef ALU_H
 #define ALU_H
