@@ -130,9 +130,15 @@ void ALU::XOR(byte value)
 
 void ALU::CP(byte value)
 {
-    Zero = (*A) == value;
-    HalfCarry = (value & 0xF) < (*A & 0xF);
-    Carry = (~(*A) & value) == 0;
+    if (*A < value)
+        Carry = true;
+    else
+        Carry = false;
+    
+    if (*A == value)
+        Zero = true;
+    else
+        Zero = false;
 }
 
 void ALU::DAA()
@@ -334,12 +340,17 @@ void ALU::JP(bool flag)
 
 void ALU::JR(bool flag)
 {
-    byte value = gb->Read(PC);
-    char* sb = (char*)&value;
+    byte value;
+    char* sb;
     if (flag)
+    {
+        value = gb->Read(PC);
+        sb = (char*)&value;
         PC = (ushort)(PC + *sb);
-    gb->SyncCycles(4);
+    }
     PC++;
+    gb->SyncCycles(4);
+    
 }
 
 

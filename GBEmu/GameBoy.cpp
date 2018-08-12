@@ -1,6 +1,8 @@
 #include "Main/GameBoy.h"
 #include <exception>
 
+static const byte colors[4][3] = { { 196, 207, 161 }, { 139, 149, 109 }, { 107, 115, 83 }, { 65, 65, 65 } };
+
 void GameBoy::Link(std::string cartridgeName)
 {
     DMATransfer = false;
@@ -16,8 +18,6 @@ void GameBoy::Link(std::string cartridgeName)
     setMode(2);
     setOAMInterrupt(true);
 }
-
-static const byte colors[4][3] = { { 196, 207, 161 }, { 139, 149, 109 }, { 107, 115, 83 }, { 65, 65, 65 } };
 
 void GameBoy::DrawPixel(int x, int y, int color)
 {

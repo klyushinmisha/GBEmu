@@ -7,10 +7,10 @@ void CPU::Clock()
     gb->Switch(PC);
     //Extracts opcode
     opcode = gb->Read(PC);
-    
-    
-    //Проверить инструкции test_...
-    
+    //Проверить функцию test_passed
+    if (PC == 0xC27d)
+    //if (PC == 0xC276)
+        PC = PC;
     PC++;
 
 

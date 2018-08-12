@@ -3,7 +3,7 @@
 void Memory::LoadCartridge(std::string path)
 {
 	std::fstream is;
-    is.open("/Users/mikhail/Desktop/C++/GBEmu/GBEmu/ROMs/Tetris.gb", std::fstream::in);
+    is.open("/Users/mikhail/Desktop/C++/GBEmu/GBEmu/ROMs/02-interrupts.gb", std::fstream::in);
 
     long int length = is.tellg();
     is.seekg(0, is.end);
@@ -71,11 +71,11 @@ Memory::Memory(GameBoy* gb, std::string cartridgeName, byte* RAM)
     
 }
 
-
 byte Memory::Read(int addr)
 {
     gb->Sync();
-
+    
+    
     //Reads from ROM
     if (isBooting & (addr < 256))
     {
@@ -87,7 +87,12 @@ byte Memory::Read(int addr)
         return cartridgeData[RAMBank - 1][addr - 0x8000];
 
     //Reads from RAM
-    return RAM[addr];
+    int x = RAM[addr];
+    
+    if (addr >= 0xC192 && addr < 0xC200)
+        x = x;
+    
+    return x;
 }
 
 
