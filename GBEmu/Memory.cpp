@@ -3,7 +3,7 @@
 void Memory::LoadCartridge(std::string path)
 {
 	std::fstream is;
-    is.open("/Users/mikhail/Desktop/C++/GBEmu/GBEmu/ROMs/02-interrupts.gb", std::fstream::in);
+    is.open("/Users/mikhail/Desktop/C++/GBEmu/GBEmu/ROMs/11-op a,(hl).gb", std::fstream::in);
 
     long int length = is.tellg();
     is.seekg(0, is.end);

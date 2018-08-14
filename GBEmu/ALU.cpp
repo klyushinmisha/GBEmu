@@ -77,26 +77,29 @@ void ALU::ADD_SP_n()
     SP = ADDsbyteToSP();
 }
 
-
+//сделать попроще
 ushort ALU::ADDsbyteToSP()
 {
     Zero = false;
     Substract = false;
     tmp = gb->Read(PC);
     PC++;
+    ushort newSP = SP;
     char* sb = (char*)&tmp;
+    newSP += *sb;
+    
     if (*sb < 0)
     {
-        HalfCarry = (SP & 0xFFF) > (abs(*sb) & 0xFFF);
-        Carry = (SP & 0xFFFF) > (abs(*sb) & 0xFFFF);
+        HalfCarry = (newSP & 0xF) <= (SP & 0xF);
+        Carry = (newSP & 0xFF) <= (SP & 0xFF);
     }
     else
     {
-        HalfCarry = (((SP & 0xFFF) + (tmp & 0xFFF)) & 0x1000) == 0x1000;
-        Carry = (((SP & 0xFFFF) + (tmp & 0xFFFF)) & 0x10000) == 0x10000;
+        HalfCarry = (((SP & 0xF) + (tmp & 0xF)) & 0x10) == 0x10;
+        Carry = (((SP & 0xFF) + (tmp & 0xFF)) & 0x100) == 0x100;
     }
     gb->SyncCycles(8);
-    return SP + *sb;
+    return newSP;
 }
 
 
