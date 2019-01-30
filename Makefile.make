@@ -1,0 +1,1 @@
+clang++ -o GBEmu ALU.cpp CPU.cpp LCD.cpp Background.cpp GameBoy.cpp Memory.cpp Timer.cpp Interrupts.cpp -I./ -framework SDL2

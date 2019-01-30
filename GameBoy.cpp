@@ -205,10 +205,10 @@ void GameBoy::Manager()
     ints->Manager();
 }
 
-int main()
+int main(int argc, char** argv)
 {
 	GameBoy* gb = new GameBoy();
-	gb->Link("Tetris.gb");
+	gb->Link(argv[1]);
     gb->Run();
 	return 0;
 }

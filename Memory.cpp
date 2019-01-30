@@ -3,7 +3,7 @@
 void Memory::LoadCartridge(std::string path)
 {
 	std::fstream is;
-    is.open("/Users/mikhail/Desktop/C++/GBEmu/GBEmu/ROMs/11-op a,(hl).gb", std::fstream::in);
+    is.open(path, std::fstream::in);
 
     long int length = is.tellg();
     is.seekg(0, is.end);
@@ -59,7 +59,7 @@ Memory::Memory(GameBoy* gb, std::string cartridgeName, byte* RAM)
     std::fstream fs;
     try
     {
-        fs.open("/Users/mikhail/Desktop/C++/GBEmu/GBEmu/Resources/BIOS.bin", std::fstream::in);
+        fs.open("Resources/BIOS.bin", std::fstream::in);
         char* tmpR = new char[256];
         fs.read(tmpR, 256);
         ROM = (byte*)tmpR;
