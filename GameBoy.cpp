@@ -1,8 +1,6 @@
 #include "Main/GameBoy.h"
 #include <exception>
 
-static const uint32_t colors[4] = { 0x01C4CFA1, 0x018B956D, 0x016B7353, 0x01414141 };
-
 void GameBoy::Link(std::string cartridgeName)
 {
     DMATransfer = false;

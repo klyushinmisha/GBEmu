@@ -5,6 +5,7 @@
 #include "Main/Interrupts.h"
 #include "SDL2/SDL.h"
 #include <string>
+#include <vector>
 
 
 class CPU;
@@ -33,6 +34,7 @@ private:
     Uint32* pixels;
     int scale;
     byte* RAM;
+    std::vector<Uint32> colors = { 0x01C4CFA1U, 0x018B956DU, 0x016B7353U, 0x01414141U };
 
 
 public:
