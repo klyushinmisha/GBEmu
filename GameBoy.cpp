@@ -19,7 +19,6 @@ void GameBoy::Link(std::string cartridgeName)
 
 void GameBoy::DrawPixel(int x, int y, int color)
 {
-    //fix this place
     for (int i = 0; i < scale; i++) {
         for (int j = 0; j < scale; j++) {
             int pxl = (y * scale + i) * 160 * scale + scale * x + j;
