@@ -1,7 +1,7 @@
 #include "Main/GameBoy.h"
 #include <exception>
 
-static const byte colors[4][3] = { { 196, 207, 161 }, { 139, 149, 109 }, { 107, 115, 83 }, { 65, 65, 65 } };
+static const uint32_t colors[4] = { 0x01C4CFA1, 0x018B956D, 0x016B7353, 0x01414141 };
 
 void GameBoy::Link(std::string cartridgeName)
 {
@@ -21,35 +21,41 @@ void GameBoy::Link(std::string cartridgeName)
 
 void GameBoy::DrawPixel(int x, int y, int color)
 {
-    SDL_SetRenderDrawColor(ren, colors[color][0], colors[color][1], colors[color][2], 255);
-    r->x = x*scale;
-    r->y = y*scale;
-    SDL_RenderFillRect(ren, r);
+    //fix this place
+    for (int i = 0; i < scale; i++) {
+        for (int j = 0; j < scale; j++) {
+            int pxl = (y * scale + i) * 160 * scale + scale * x + j;
+            pixels[pxl] = colors[color];
+        }
+    }
 }
 
 void GameBoy::Run()
 {
+    scale = 2;
+    pixels = new Uint32[scale * scale * 160 * 144];
     SDL_Init(SDL_INIT_EVERYTHING);
     
-    scale = 3;
-    SDL_Window* w = SDL_CreateWindow("GBEmu", 100, 100, 160*scale, 144*scale, 0);
+    SDL_Window* w = SDL_CreateWindow("GBEmu", 100, 100, scale * 160, scale * 144, 0);
 
     SDL_Event e;
     ren = SDL_CreateRenderer(w, -1, SDL_RENDERER_ACCELERATED);
-    r = new SDL_Rect();
+
+    texture = SDL_CreateTexture(ren,
+        SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, scale * 160, scale * 144);
 
     bool isRunning = true;
-    r->w = scale;
-    r->h = scale;
     SDL_ShowWindow(w);
-    SDL_RenderClear(ren);
     while (isRunning)
     {
         if (Drawing())
             Manager();
         else
         {
+            SDL_RenderClear(ren);
+            SDL_RenderCopy(ren, texture, nullptr, nullptr);
             SDL_RenderPresent(ren);
+            SDL_UpdateTexture(texture, nullptr, pixels, scale * 160 * sizeof(Uint32));
             SDL_PollEvent(&e);
             switch (e.type)
             {
@@ -66,8 +72,8 @@ void GameBoy::Run()
         }
     }
 
-    delete r;
-
+    delete pixels;
+    SDL_DestroyTexture(texture);
     SDL_DestroyRenderer(ren);
     SDL_DestroyWindow(w);
     SDL_Quit();

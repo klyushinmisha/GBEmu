@@ -29,9 +29,10 @@ private:
     Timer* timer;
     Interrupts* ints;
     SDL_Renderer* ren;
-    SDL_Rect* r;
-    byte* RAM;
+    SDL_Texture* texture;
+    Uint32* pixels;
     int scale;
+    byte* RAM;
 
 
 public:
