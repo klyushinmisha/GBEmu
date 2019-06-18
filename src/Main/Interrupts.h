@@ -1,5 +1,4 @@
 #pragma once
-#include "Main/GameBoy.h"
 
 class GameBoy;
 
@@ -19,7 +18,7 @@ private:
 
 
 public:
-    Interrupts(GameBoy* gb, byte* RAM);
+    Interrupts();
     void Sync(int value);
     void Manager();
     bool Drawing();

@@ -1,10 +1,11 @@
 #include "Main/Timer.h"
+#include "Main/GameBoy.h"
 
-Timer::Timer(byte* RAM)
+Timer::Timer()
 {
     systemCounter = 0;
     internalCounter = 0;
-    this->RAM = RAM;
+    this->RAM = GameBoy::getInstance()->getRAM();
 }
 
 //Overloaded increment operator

@@ -1,6 +1,4 @@
 #pragma once
-#include "Main/GameBoy.h"
-
 
 class GameBoy;
 
@@ -31,7 +29,7 @@ private:
     int frequency;
 
 public:
-    Timer(byte* RAM);
+    Timer();
 
     //Overloaded increment operator
     //Used for 

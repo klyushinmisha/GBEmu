@@ -1,5 +1,6 @@
 #include "Main/LCD.h"
 #include <exception>
+#include "Main/GameBoy.h"
 
 byte LCD::GetPixel(int pixel)
 {
@@ -38,11 +39,11 @@ byte LCD::GetColor(ushort startAddr, int xOffset, int yOffset)
 }
 
 
-LCD::LCD(GameBoy* gb, byte* RAM)
+LCD::LCD()
 {
-    this->gb = gb;
-    this->RAM = RAM;
-    background = new Background(gb, RAM);
+    this->gb = GameBoy::getInstance();
+    this->RAM = gb->getRAM();
+    background = new Background();
     //s = new Sprite(gb);
     //window = new Window(gb);
     //sID = new byte[10];

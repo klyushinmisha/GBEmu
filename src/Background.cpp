@@ -1,5 +1,6 @@
 #include "LCD/Background.h"
 #include <exception>
+#include "Main/GameBoy.h"
 
 byte Background::TileFromMap(int x, int y)
 {
@@ -11,10 +12,10 @@ byte Background::TileFromMap(int x, int y)
     return RAM[startAddr + y * 32 + x];
 }
 
-Background::Background(GameBoy* gb, byte* RAM)
+Background::Background()
 {
-    this->gb = gb;
-    this->RAM = RAM;
+    this->gb = GameBoy::getInstance();
+    this->RAM = gb->getRAM();
 }
 
 byte Background::GetPalleteColor(int pixel)

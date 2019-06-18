@@ -1,6 +1,5 @@
 #pragma once
 #include "Main/LCD.h"
-#include "Main/GameBoy.h"
 
 class GameBoy;
 
@@ -15,7 +14,7 @@ private:
     byte* RAM;
 
 public:
-    Background(GameBoy* gb, byte* RAM);
+    Background();
     byte TileFromMap(int i, int j);
     byte GetPalleteColor(int pixel);
 };

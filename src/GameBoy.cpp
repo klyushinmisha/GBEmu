@@ -1,20 +1,33 @@
 #include "Main/GameBoy.h"
 #include <exception>
 
-void GameBoy::Link(std::string cartridgeName)
-{
+void GameBoy::initParts() {
+    cpu = new CPU();
+    memory = new Memory();
+    lcd = new LCD();
+    timer = new Timer();
+    ints = new Interrupts();
+}
+
+GameBoy::GameBoy() {
     DMATransfer = false;
     IME = true;
     Halt = false;
     Stop = false;
     RAM = new byte[0x10000];
-    this->memory = new Memory(this, cartridgeName, RAM);
-    this->cpu = new CPU(this);
-    this->lcd = new LCD(this, RAM);
-    this->timer = new Timer(RAM);
-    this->ints = new Interrupts(this, RAM);
+    colors = new std::vector<Uint32>({ 0x01C4CFA1U, 0x018B956DU, 0x016B7353U, 0x01414141U });
     setMode(2);
     setOAMInterrupt(true);
+}
+
+GameBoy* GameBoy::gb;
+
+GameBoy* GameBoy::getInstance() {
+    if (GameBoy::gb == nullptr) {
+        gb = new GameBoy();
+        gb->initParts();
+    }
+    return GameBoy::gb;
 }
 
 void GameBoy::DrawPixel(int x, int y, int color)
@@ -22,9 +35,13 @@ void GameBoy::DrawPixel(int x, int y, int color)
     for (int i = 0; i < scale; i++) {
         for (int j = 0; j < scale; j++) {
             int pxl = (y * scale + i) * 160 * scale + scale * x + j;
-            pixels[pxl] = colors[color];
+            pixels[pxl] = colors->at(color);
         }
     }
+}
+
+void GameBoy::LoadCartridge(std::string cartridge) {
+    memory->LoadCartridge(cartridge);
 }
 
 void GameBoy::Run()
@@ -206,12 +223,4 @@ bool GameBoy::Drawing()
 void GameBoy::Manager()
 {
     ints->Manager();
-}
-
-int main(int argc, char** argv)
-{
-	GameBoy* gb = new GameBoy();
-	gb->Link(argv[1]);
-    gb->Run();
-	return 0;
 }

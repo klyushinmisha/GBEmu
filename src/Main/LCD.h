@@ -1,5 +1,4 @@
 #pragma once
-#include "Main/GameBoy.h"
 #include "LCD/Background.h"
 
 class GameBoy;
@@ -28,7 +27,7 @@ private:
 
 
 public:
-    LCD(GameBoy* gb, byte* RAM);
+    LCD();
     void DrawLine();
     //void FindSprites();
     byte PixelColor(byte ID, int xOffset, int yOffset, bool bank);

@@ -1,5 +1,18 @@
 #include "Main/CPU.h"
+#include "Main/GameBoy.h"
 
+CPU::CPU() {
+    this->gb = GameBoy::getInstance();
+    A = (byte*)&AF + 1;
+    F = (byte*)&AF;
+    B = (byte*)&BC + 1;
+    C = (byte*)&BC;
+    D = (byte*)&DE + 1;
+    E = (byte*)&DE;
+    H = (byte*)&HL + 1;
+    L = (byte*)&HL;
+    PC = 0;
+}
 
 void CPU::Clock()
 {
@@ -7,12 +20,7 @@ void CPU::Clock()
     gb->Switch(PC);
     //Extracts opcode
     opcode = gb->Read(PC);
-    //Проверить функцию test_passed
-    if (PC == 0xC27d)
-    //if (PC == 0xC276)
-        PC = PC;
     PC++;
-
 
     //Extracts equal instruction
     switch (opcode)
@@ -1815,6 +1823,390 @@ void CPU::Clock()
 
 
 
+
+
+void CPU::ADD(byte value)
+{
+    Substract = false;
+    HalfCarry = (((*A & 0xF) + (value & 0xF)) & 0x10) == 0x10;
+    Carry = ((*A + value) & 0x100) == 0x100;
+    *A += value;
+    Zero = (*A) == 0;
+}
+
+void CPU::ADC(byte value)
+{
+    ADD((byte)(value + *F & 0x10));
+}
+
+void CPU::SUB(byte value)
+{
+    Substract = true;
+    HalfCarry = (*A & 0xF) >= (value & 0xF);
+    Carry = (~(*A) & value) == 0;
+    *A -= value;
+    Zero = (*A) == 0;
+}
+
+void CPU::SBC(byte value)
+{
+    SUB(value + *F & 0x10);
+}
+
+void CPU::INC(byte* value)
+{
+    Substract = false;
+    HalfCarry = (*value & 0xF) == 0xF;
+    (*value)++;
+    Zero = *value == 0;
+}
+
+void CPU::DEC(byte* value)
+{
+    Substract = true;
+    HalfCarry = (*value & 0xF) == 0;
+    (*value)--;
+    Zero = *value == 0;
+}
+
+void CPU::ADD(ushort value)
+{
+    Substract = false;
+    HalfCarry = (((HL & 0xFFF) + (value & 0xFFF)) & 0x1000) == 0x1000;
+    Carry = (((HL & 0xFFFF) + (value & 0xFFFF)) & 0x10000) == 0x10000;
+    HL += value;
+    gb->SyncCycles(4);
+}
+
+void CPU::ADD_SP_n()
+{
+    SP = ADDsbyteToSP();
+}
+
+//сделать попроще
+ushort CPU::ADDsbyteToSP()
+{
+    Zero = false;
+    Substract = false;
+    tmp = gb->Read(PC);
+    PC++;
+    ushort newSP = SP;
+    char* sb = (char*)&tmp;
+    newSP += *sb;
+    
+    if (*sb < 0)
+    {
+        HalfCarry = (newSP & 0xF) <= (SP & 0xF);
+        Carry = (newSP & 0xFF) <= (SP & 0xFF);
+    }
+    else
+    {
+        HalfCarry = (((SP & 0xF) + (tmp & 0xF)) & 0x10) == 0x10;
+        Carry = (((SP & 0xFF) + (tmp & 0xFF)) & 0x100) == 0x100;
+    }
+    gb->SyncCycles(8);
+    return newSP;
+}
+
+
+
+void CPU::AND(byte value)
+{
+    HalfCarry = true;
+    Substract = false;
+    Carry = false;
+    *A &= value;
+    Zero = (*A) == 0;
+}
+
+void CPU::OR(byte value)
+{
+    HalfCarry = false;
+    Substract = false;
+    Carry = false;
+    *A |= value;
+    Zero = (*A) == 0;
+}
+
+void CPU::XOR(byte value)
+{
+    HalfCarry = false;
+    Substract = false;
+    Carry = false;
+    *A ^= value;
+    Zero = (*A) == 0;
+}
+
+void CPU::CP(byte value)
+{
+    if (*A < value)
+        Carry = true;
+    else
+        Carry = false;
+    
+    if (*A == value)
+        Zero = true;
+    else
+        Zero = false;
+}
+
+void CPU::DAA()
+{
+    byte bias = Carry ? 0x60 : 0;
+
+    bias += HalfCarry ? 0x6 : 0;
+
+    if (Substract)
+        *A -= bias;
+    else
+    {
+        if ((*A & 0xF) > 9)
+            bias |= 6;
+        if (*A > 0x99)
+        {
+            bias |= 0x60;
+            Carry = true;
+        }
+        *A += bias;
+    }
+
+    HalfCarry = false;
+
+    Zero = (*A) == 0;
+}
+
+void CPU::HALT()
+{
+    if (!gb->IME)
+        PC++;
+    else
+        gb->Halt = true;
+}
+
+void CPU::STOP()
+{
+    if (gb->Read(PC) == 0x00)
+    {
+        gb->Stop = true;
+        PC++;
+        gb->SyncCycles(-4);
+    }
+}
+
+void CPU::SWAP(byte* value)
+{
+    Zero = (*value) == 0;
+    HalfCarry = false;
+    Substract = false;
+    Carry = false;
+    *value = (*value & 0xF0) >> 4 | (*value) << 4;
+}
+
+void CPU::CPL()
+{
+    *A = ~(*A);
+    Substract = true;
+    HalfCarry = true;
+}
+
+void CPU::CCF()
+{
+    Substract = false;
+    HalfCarry = false;
+    Carry = !Carry;
+}
+
+void CPU::SCF()
+{
+    Substract = false;
+    HalfCarry = false;
+    Carry = true;
+}
+
+
+
+void CPU::RLC(byte* value)
+{
+    Carry = ((*value >> 7) & 1) == 1;
+    *value = *value >> 7 | (*value) << 1;
+    Zero = (*value) == 0;
+    HalfCarry = false;
+    Substract = false;
+}
+
+void CPU::RL(byte* value)
+{
+    byte temp = (*value);
+    *value = *value << 1 | (Carry ? 1 : 0);
+    Carry = ((temp >> 7) & 1) == 1;
+    Zero = (*value) == 0;
+    HalfCarry = false;
+    Substract = false;
+}
+
+
+void CPU::RRC(byte* value)
+{
+    Carry = (*value & 1) == 1;
+    *value = (*value >> 1) | ((*value & 1) << 7);
+    Zero = (*value) == 0;
+    HalfCarry = false;
+    Substract = false;
+}
+
+
+void CPU::RR(byte* value)
+{
+    byte temp = (*value);
+    *value = *value >> 1 | (Carry ? 0x80 : 0);
+    Carry = (temp & 1) == 1;
+    Zero = (*value) == 0;
+    HalfCarry = false;
+    Substract = false;
+}
+
+
+void CPU::SLA(byte* value)
+{
+    Carry = (*value & 0x80) == 0x80;
+    *value = *value << 1;
+    Zero = (*value) == 0;
+    HalfCarry = false;
+    Substract = false;
+}
+
+
+void CPU::SRA(byte* value)
+{
+    Carry = (*value & 1) == 1;
+    *value = (*value & 0x80) | (*value) >> 1;
+    Zero = value == 0;
+    HalfCarry = false;
+    Substract = false;
+}
+
+
+void CPU::SRL(byte* value)
+{
+    Carry = (*value & 1) == 1;
+    *value = *value >> 1;
+    Zero = (*value) == 0;
+    HalfCarry = false;
+    Substract = false;
+}
+
+
+void CPU::BIT(byte bit, byte value)
+{
+    *F = (*F & 0x10) | 0x20;
+    if ((value >> bit) == 0)
+        Zero = true;
+}
+
+void CPU::SET(byte* value, byte bit)
+{
+    *value |= 1 << bit;
+}
+
+
+void CPU::RES(byte* value, byte bit)
+{
+    *value &= ~(1 << bit);
+}
+
+
+
+void CPU::PUSH(byte h, byte l)
+{
+    gb->Write(--SP, h);
+    gb->Write(--SP, l);
+    gb->SyncCycles(8);
+}
+
+
+void CPU::POP(byte* h, byte* l)
+{
+    *l = gb->Read(SP);
+    SP++;
+    *h = gb->Read(SP);
+    SP++;
+    gb->SyncCycles(4);
+}
+
+
+void CPU::JP(bool flag)
+{
+    if (flag)
+        PC = gb->ReadWord(PC);
+    else
+    {
+        PC += 2;
+        gb->SyncCycles(4);
+    }
+    gb->SyncCycles(4);
+}
+
+
+void CPU::JR(bool flag)
+{
+    byte value;
+    char* sb;
+    if (flag)
+    {
+        value = gb->Read(PC);
+        sb = (char*)&value;
+        PC = (ushort)(PC + *sb);
+    }
+    PC++;
+    gb->SyncCycles(4);
+    
+}
+
+
+void CPU::CALL(bool flag)
+{
+    if (flag)
+    {
+        SP -= 2;
+        gb->WriteWord(SP, (ushort)(PC + 2));
+        PC = gb->ReadWord(PC);
+    }
+    else
+    {
+        PC += 2;
+        gb->SyncCycles(4);
+    }
+    gb->SyncCycles(4);
+}
+
+
+void CPU::RST(ushort addr)
+{
+    SP -= 2;
+    gb->WriteWord(SP, PC);
+    PC = addr;
+    gb->SyncCycles(4);
+}
+
+
+void CPU::RET(bool flag)
+{
+    if (flag)
+    {
+        PC = gb->ReadWord(SP);
+        SP += 2;
+        gb->SyncCycles(4);
+    }
+    gb->SyncCycles(4);
+}
+
+
+void CPU::RETI()
+{
+    PC = gb->ReadWord(SP);
+    SP += 2;
+    gb->IME = true;
+}
 
 //Used by interrupts to save previous Program Counter
 //and jump to it's start address

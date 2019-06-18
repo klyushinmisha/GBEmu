@@ -1,10 +1,11 @@
 #include "Main/Interrupts.h"
+#include "Main/GameBoy.h"
 
-Interrupts::Interrupts(GameBoy* gb, byte* RAM)
+Interrupts::Interrupts()
 {
     interruptCounter = 0;
-    this->gb = gb;
-    this->RAM = RAM;
+    this->gb = GameBoy::getInstance();
+    this->RAM = gb->getRAM();
     gb->Halt = false; gb->Stop = false;
     gb->IME = true;
     gb->DMATransfer = false;

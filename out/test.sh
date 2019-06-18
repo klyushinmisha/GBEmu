@@ -1,6 +1,6 @@
 #!bin/bash
 
-basedir='ROMs/testing'
+basedir='./ROMs/testing'
 
 cd $basedir
 roms=(*)

@@ -1,29 +1,22 @@
-#include "Main/CPU.h"
-#include "Main/Memory.h"
-#include "Main/LCD.h"
-#include "Main/Timer.h"
-#include "Main/Interrupts.h"
+#pragma once
+#include "CPU.h"
+#include "Memory.h"
+#include "LCD.h"
+#include "Timer.h"
+#include "Interrupts.h"
 #include "SDL2/SDL.h"
 #include <string>
 #include <vector>
-
-
-class CPU;
-class Memory;
-class LCD;
-class Timer;
-class Interrupts;
 
 typedef unsigned char byte;
 typedef signed char sbyte;
 typedef unsigned short ushort;
 
-#ifndef GAMEBOY
-#define GAMEBOY
 
 class GameBoy
 {
 private:
+    static GameBoy* gb;
     CPU* cpu;
     Memory* memory;
     LCD* lcd;
@@ -34,8 +27,9 @@ private:
     Uint32* pixels;
     int scale;
     byte* RAM;
-    std::vector<Uint32> colors = { 0x01C4CFA1U, 0x018B956DU, 0x016B7353U, 0x01414141U };
+    std::vector<Uint32>* colors;
 
+    GameBoy();
 
 public:
     void DrawPixel(int x, int y, int color);
@@ -44,13 +38,19 @@ public:
     bool Halt;
     bool Stop;
 
+    static GameBoy* createInstance();
+    void initParts();
+
     ~GameBoy();
 
-
+    byte* getRAM() {
+        return RAM;
+    }
     bool getFlag(ushort addr, byte value) { return (RAM[addr] & value) == value ? true : false; }
     void setFlag(ushort addr, byte flag, bool value) { value ? RAM[addr] |= flag : RAM[addr] &= (byte)(~flag); }
 
 
+    static GameBoy* getInstance();
 
     bool getLCDDisplayEnable() { return getFlag(0xFF40, 128); }
 
@@ -108,9 +108,7 @@ public:
     byte getWindowX() { return (byte)(RAM[0xFF4B] - 7); }
 
 
-
-
-    void Link(std::string cartridgeName);
+    void LoadCartridge(std::string cartridge);
     void Run();
     void SyncCycles(int count);
     void Sync();
@@ -129,5 +127,3 @@ public:
     void KeyDown(SDL_Event e);
     void KeyUp();
 };
-
-#endif

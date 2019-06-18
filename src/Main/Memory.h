@@ -1,5 +1,4 @@
 #pragma once
-#include "Main/GameBoy.h"
 #include <fstream>
 #include <string>
 #include <iostream>
@@ -29,12 +28,12 @@ private:
 
 
 
-        void LoadCartridge(std::string path);
+        
 
 public:
-        Memory(GameBoy* gb, std::string cartridgeName, byte* RAM);
+        Memory();
 
-
+        void LoadCartridge(std::string path);
         byte Read(int addr);
 
 

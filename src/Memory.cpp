@@ -1,4 +1,5 @@
 #include "Main/Memory.h"
+#include "Main/GameBoy.h"
 
 void Memory::LoadCartridge(std::string path)
 {
@@ -40,14 +41,13 @@ void Memory::LoadCartridge(std::string path)
     is.close();
 }
 
-Memory::Memory(GameBoy* gb, std::string cartridgeName, byte* RAM)
+Memory::Memory()
 {
     //Init all components
-    this->gb = gb;
-    this->RAM = RAM;
+    this->gb = GameBoy::getInstance();
+    this->RAM = gb->getRAM();
     RAMBank = 0;
     
-    LoadCartridge(cartridgeName);
     
     //Clear this item
     //because 0 means all keys down
