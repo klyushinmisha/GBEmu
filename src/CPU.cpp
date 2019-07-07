@@ -1668,23 +1668,23 @@ void CPU::Clock()
 
 
         case 0x07:
-            RLC(A);
+            RLCA();
             break;
 
 
         
         case 0x17:
-            RL(A);
+            RLA();
             break;
 
 
         case 0x0F:
-            RRC(A);
+            RRCA();
             break;
 
 
         case 0x1F:
-            RR(A);
+            RRA();
             break;
 
 
@@ -2080,6 +2080,48 @@ void CPU::RR(byte* value)
 }
 
 
+
+void CPU::RLCA()
+{
+    Carry = ((*A >> 7) & 1) == 1;
+    *A = *A >> 7 | (*A) << 1;
+    Zero = false;
+    HalfCarry = false;
+    Substract = false;
+}
+
+void CPU::RLA()
+{
+    byte temp = (*A);
+    *A = *A << 1 | (Carry ? 1 : 0);
+    Carry = ((temp >> 7) & 1) == 1;
+    Zero = false;
+    HalfCarry = false;
+    Substract = false;
+}
+
+void CPU::RRCA()
+{
+    Carry = (*A & 1) == 1;
+    *A = (*A >> 1) | ((*A & 1) << 7);
+    Zero = false;
+    HalfCarry = false;
+    Substract = false;
+}
+
+
+void CPU::RRA()
+{
+    byte temp = (*A);
+    *A = *A >> 1 | (Carry ? 0x80 : 0);
+    Carry = (temp & 1) == 1;
+    Zero = false;
+    HalfCarry = false;
+    Substract = false;
+}
+
+
+
 void CPU::SLA(byte* value)
 {
     Carry = (*value & 0x80) == 0x80;
@@ -2094,7 +2136,7 @@ void CPU::SRA(byte* value)
 {
     Carry = (*value & 1) == 1;
     *value = (*value & 0x80) | (*value) >> 1;
-    Zero = value == 0;
+    Zero = *value == 0;
     HalfCarry = false;
     Substract = false;
 }

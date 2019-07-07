@@ -91,6 +91,10 @@ protected:
         void RL(byte* value);
         void RRC(byte* value);
         void RR(byte* value);
+        void RLCA();
+        void RLA();
+        void RRCA();
+        void RRA();
         void SLA(byte* value);
         void SRA(byte* value);
         void SRL(byte* value);
