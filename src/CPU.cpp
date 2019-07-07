@@ -2154,9 +2154,12 @@ void CPU::SRL(byte* value)
 
 void CPU::BIT(byte bit, byte value)
 {
-    *F = (*F & 0x10) | 0x20;
-    if ((value >> bit) == 0)
-        Zero = true;
+    Substract = false;
+    HalfCarry = true;
+    Zero = true;
+    if ((value >> bit) & 1) {
+        Zero = false;
+    }
 }
 
 void CPU::SET(byte* value, byte bit)
