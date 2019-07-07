@@ -22,4 +22,6 @@ public:
     void Sync(int value);
     void Manager();
     bool Drawing();
+    bool EnterHALTMode();
+    bool EnterSTOPMode();
 };

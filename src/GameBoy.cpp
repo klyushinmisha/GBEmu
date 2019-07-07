@@ -15,7 +15,12 @@ GameBoy::GameBoy() {
     Halt = false;
     Stop = false;
     RAM = new byte[0x10000];
-    colors = new std::vector<Uint32>({ 0x01C4CFA1U, 0x018B956DU, 0x016B7353U, 0x01414141U });
+    colors = new std::vector<Uint32>({ 
+        0x01C4CFA1U, 
+        0x018B956DU, 
+        0x016B7353U, 
+        0x01414141U 
+    });
     setMode(2);
     setOAMInterrupt(true);
 }
@@ -151,6 +156,11 @@ void GameBoy::KeyUp()
 
 GameBoy::~GameBoy()
 {
+    delete cpu;
+    delete memory;
+    delete lcd;
+    delete timer;
+    delete ints;
     delete[] RAM;
 }
 
@@ -223,4 +233,13 @@ bool GameBoy::Drawing()
 void GameBoy::Manager()
 {
     ints->Manager();
+}
+
+
+bool GameBoy::EnterHALTMode() {
+    return ints->EnterHALTMode();
+}
+
+bool GameBoy::EnterSTOPMode() {
+    return ints->EnterSTOPMode();
 }

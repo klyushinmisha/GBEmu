@@ -126,4 +126,6 @@ public:
     void Manager();
     void KeyDown(SDL_Event e);
     void KeyUp();
+    bool EnterHALTMode();
+    bool EnterSTOPMode();
 };

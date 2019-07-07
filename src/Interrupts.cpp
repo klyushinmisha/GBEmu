@@ -28,7 +28,8 @@ void Interrupts::Manager()
         if (gb->IME)
         {
             gb->IME = false;
-            byte interrupts = (byte)(*IE & *IF), interrupt = 0;
+            byte interrupts = (byte)(*IE & *IF);
+            byte interrupt = 0;
             *IF &= (byte)(~interrupts);
             while (((interrupts >> interrupt) & 1) != 1)
                 interrupt++;
@@ -126,4 +127,16 @@ bool Interrupts::Drawing()
     if (gb->getCoincidenceFlag() & gb->getLYCLYCoincidenceInterrupt())
         RAM[0xFF0F] |= 2;
     return true;
+}
+
+bool Interrupts::EnterHALTMode() {
+    gb->Halt = true;
+    if (gb->IME && !(*IE & *IF)) {
+        gb->Halt = false;
+    }
+    return gb->Halt;
+}
+
+bool Interrupts::EnterSTOPMode() {
+    //TODO: implement
 }

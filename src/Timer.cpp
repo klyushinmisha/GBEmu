@@ -22,9 +22,11 @@ void Timer::Inc()
     enabled = (RAM[0xFF07] & 4) == 4;
 
     //Sets timer frequency
-    frequency = 1024;
     switch (RAM[0xFF07] & 3)
     {
+        case 0:
+            frequency = 1024;
+            break;
         case 1:
             frequency = 16;
             break;
@@ -36,17 +38,21 @@ void Timer::Inc()
             break;
     }
 
-    //Syncronization of TIMA register
-    internalCounter += 4;
-    if ((internalCounter > frequency) & enabled)
-        //TIMA
-        RAM[0xFF05]++;
-
-    //Checks TIMA overflow
-    if (RAM[0xFF05] == 0)
-    {
-        //copy TMA to TIMA
-        RAM[0xFF05] = RAM[0xFF06];
-        RAM[0xFF0F] |= 4;
+    if (enabled) {
+        //Syncronization of TIMA register
+        internalCounter += 4;
+        if (internalCounter == frequency) {
+            //TIMA
+            RAM[0xFF05]++;
+            //Checks TIMA overflow
+            if (RAM[0xFF05] == 0)
+            {
+                //copy TMA to TIMA
+                RAM[0xFF05] = RAM[0xFF06];
+                RAM[0xFF0F] |= 4;
+            }
+        }
+        internalCounter = internalCounter % frequency;
     }
+
 }

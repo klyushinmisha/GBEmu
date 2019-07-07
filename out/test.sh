@@ -1,6 +1,6 @@
 #!bin/bash
 
-basedir='./ROMs/testing'
+basedir='./ROMs/Testing'
 
 cd $basedir
 roms=(*)
@@ -12,6 +12,6 @@ do
     ./GBEmu "$basedir/$rom"
 done
 
-echo "All tests passed!"
+echo "All tests executed!"
 
 

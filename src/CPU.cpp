@@ -1836,21 +1836,31 @@ void CPU::ADD(byte value)
 
 void CPU::ADC(byte value)
 {
-    ADD((byte)(value + *F & 0x10));
+    byte carry = Carry ? 1 : 0;
+    Substract = false;
+    HalfCarry = (((*A & 0xF) + (value & 0xF) + carry) & 0x10) == 0x10;
+    Carry = ((*A + value + carry) & 0x100) == 0x100;
+    *A += value + carry;
+    Zero = (*A) == 0;
 }
 
 void CPU::SUB(byte value)
 {
     Substract = true;
-    HalfCarry = (*A & 0xF) >= (value & 0xF);
-    Carry = (~(*A) & value) == 0;
+    HalfCarry = (*A & 0xF) < (value & 0xF);
+    Carry = (*A & 0xFF) < (value & 0xFF);
     *A -= value;
     Zero = (*A) == 0;
 }
 
 void CPU::SBC(byte value)
 {
-    SUB(value + *F & 0x10);
+    byte carry = Carry ? 1 : 0;
+    Substract = true;
+    HalfCarry = (*A & 0xF) < ((value & 0xF) + carry);
+    Carry = (*A & 0xFF) < ((value & 0xFF) + carry);
+    *A -= value + carry;
+    Zero = (*A) == 0;
 }
 
 void CPU::INC(byte* value)
@@ -1939,11 +1949,14 @@ void CPU::XOR(byte value)
 
 void CPU::CP(byte value)
 {
-    if (*A < value)
+    Substract = true;
+    HalfCarry = (*A & 0xF) < (value & 0xF);
+
+    if (value > *A)
         Carry = true;
     else
         Carry = false;
-    
+
     if (*A == value)
         Zero = true;
     else
@@ -1977,10 +1990,11 @@ void CPU::DAA()
 
 void CPU::HALT()
 {
-    if (!gb->IME)
-        PC++;
-    else
-        gb->Halt = true;
+    bool halt = gb->EnterHALTMode();
+    if (!halt) {
+        gb->Clock();
+        PC--;
+    }
 }
 
 void CPU::STOP()
