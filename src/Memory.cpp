@@ -54,19 +54,19 @@ Memory::Memory()
     RAM[0xFF00] = 0xFF;
 
     //Switch to ROM bank on start
-    //Copys data from BIOS.gb to ROM
+    //Copys data from boot.bin to ROM
     isBooting = true;
     std::fstream fs;
     try
     {
-        fs.open("Resources/BIOS.bin", std::fstream::in);
+        fs.open("boot.bin", std::fstream::in);
         char* tmpR = new char[256];
         fs.read(tmpR, 256);
         ROM = (byte*)tmpR;
     }
     catch (std::exception e)
     {
-        std::cout << "Can't find BIOS.gb" << std::endl;
+        std::cout << "Can't find boot.gb" << std::endl;
     }
     
 }

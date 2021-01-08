@@ -1,8 +1,19 @@
 # GBEmu
 
-### GameBoy Emulator
-Rendering via SDL2
+## Description
 
-### Installation and launch
-  - compile (required lib's: SDL2, OpenGL)
-  - launch: "./GBEmu cartridgeName"
+GameBoy emulator
+
+## Installation
+
+### Requirements:
+- SDL2
+- OpenGL
+
+### Build
+
+    make build
+
+## Launch
+
+    ./GBEmu cartridge-name
